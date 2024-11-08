@@ -1,0 +1,4 @@
+VCC 	->	3.3V
+GND	->	GND
+DOUT	->	GPIOA_PIN_4
+AOUT	->	GPIOA_PIN_6
