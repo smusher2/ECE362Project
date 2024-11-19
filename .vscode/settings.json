@@ -4,6 +4,7 @@
         "stdint.h": "c",
         "commands.h": "c",
         "stdio.h": "c",
-        "ff.h": "c"
+        "ff.h": "c",
+        "math.h": "c"
     }
 }

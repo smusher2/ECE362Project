@@ -264,29 +264,6 @@ void date(int argc, char *argv[])
             year, month_name[month], ft.day, ft.hour, ft.minute, ft.bisecond*2);
 }
 
-void dino(int argc, char *argv[])
-{
-    const char str[] =
-    "   .-~~^-.\n"
-    " .'  O    \\\n"
-    "(_____,    \\\n"
-    " `----.     \\\n"
-    "       \\     \\\n"
-    "        \\     \\\n"
-    "         \\     `.             _ _\n"
-    "          \\       ~- _ _ - ~       ~ - .\n"
-    "           \\                              ~-.\n"
-    "            \\                                `.\n"
-    "             \\    /               /       \\    \\\n"
-    "              `. |         }     |         }    \\\n"
-    "                `|        /      |        /       \\\n"
-    "                 |       /       |       /          \\\n"
-    "                 |      /`- _ _ _|      /.- ~ ^-.     \\\n"
-    "                 |     /         |     /          `.    \\\n"
-    "                 |     |         |     |             -.   ` . _ _ _ _ _ _\n"
-    "                 |_____|         |_____|                ~ . _ _ _ _ _ _ _ >\n";
-    puts(str);
-}
 
 void input(int argc, char *argv[])
 {
@@ -611,17 +588,17 @@ void light_print_values(int light_val) {
     int light_val_1 = light_val / 100;
     int light_val_2 = ((light_val / 10) % 10);
     int light_val_3 = (light_val % 10);
-    int light_thresholds[] = {1, 3, 5, 7, 9, 10};
+    int light_thresholds[] = {200, 240, 280, 320, 360, 400};
     int light_x_coords[] = {120, 132, 144, 156, 168, 180};
     uint16_t light_on_color = 0xff00;
     uint16_t off_color = 0xffff;
 
     for (int i = 0; i < 6; i++) {
-        uint16_t color = ((light_val_2+ 1) > light_thresholds[i]) ? light_on_color : off_color;
+        uint16_t color = ((light_val) > light_thresholds[i]) ? light_on_color : off_color;
         LCD_DrawFillRectangle(light_x_coords[i], 180, light_x_coords[i] + 7, 220, color);
     }
 
-    if(light_val_2 >= 6) {
+    if(light_val >= 360) {
         LCD_Circle(213, 200, 18, 1, 0xf000);
         LCD_DrawFillRectangle(211, 190, 215, 205, 0xffff);
         LCD_Circle(213, 210, 2, 1, 0xffff);
@@ -687,19 +664,18 @@ void mines_to_command() {
         AQI_val = ADC_Read();
         AQI_print_values(AQI_val);
 
-
         temp_val = ret_temp();
         temp_print_values(temp_val);
+        Adjust_Fan_Speed();
 
         hum_val = ret_hum();
         hum_print_values(hum_val);
 
         light_val = Read_ADC();
-        light_val = 999 - (light_val * 999 / 4095);
+        light_val = (light_val * 999 / 4095);
         light_print_values(light_val);
 
         nano_wait(100000000);
-        
     }
     
     
@@ -707,39 +683,11 @@ void mines_to_command() {
 
 
 
-
-void add(int argc, char *argv[])
-{
-  int sum = 0;
-  for(int i=1; i < argc; i++) {
-      sum += strtol(argv[i], 0, 0);
-  }
-  printf("The sum is %d\n", sum);
-}
-
-void mul(int argc, char *argv[])
-{
-  int prod = 1;
-  for(int i=1; i < argc; i++) {
-    prod *= strtol(argv[i], 0, 0);
-  }
-  printf("The product is %d\n", prod);
-}
-
-void birb(int argc, char *argv[])
-{
-    const char str[] =
-    "   chyuu~ chyuu~ chyuu~"
-    "       chyuu~ chyuu~ chyuu~";
-    puts(str);
-}
-
 struct commands_t cmds[] = {
         { "append", append },
         { "cat", cat },
         { "cd", cd },
         { "date", date },
-        { "dino", dino },
         { "input", input },
         { "lcd_init", lcd_init },
         { "ls", ls },
@@ -752,17 +700,13 @@ struct commands_t cmds[] = {
         { "drawline", drawline },
         { "drawrect", drawrect },
         { "drawfillrect", drawfillrect },
-        { "drawfillcircle", drawfillcircle}, // REPLACE
-        //{ "drawstring", drawstring}, // REPLACE
+        { "drawfillcircle", drawfillcircle},
         { "set_design", set_design},
         { "AQI_print_values", AQI_print_values},
         { "temp_print_values", temp_print_values},
         { "hum_print_values", hum_print_values},
         { "light_print_values", light_print_values},
         { "mines_to_command", mines_to_command},
-        { "add", add},
-        { "mul", mul},
-        { "birb", birb},
 };
 
 // A weak definition that can be overridden by a better one.
